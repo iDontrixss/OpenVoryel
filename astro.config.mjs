@@ -19,5 +19,21 @@ export default defineConfig({
   server: {
     host: "0.0.0.0",
   },
-  integrations: [solidJs()],
+  integrations: [solidJs(), assetsIgnore()],
 })
+
+// El adapter emite el worker como directorio dist/_worker.js/ y wrangler se
+// niega a subirlo como asset estatico. Este hook escribe dist/.assetsignore
+// en cada build (local y Cloudflare) para excluirlo; el worker se sube via
+// `main` en wrangler.jsonc y los estaticos (dist/_astro) siguen como assets.
+function assetsIgnore() {
+  return {
+    name: "assetsIgnore",
+    hooks: {
+      "astro:build:done": async ({ dir }) => {
+        const { writeFile } = await import("node:fs/promises")
+        await writeFile(new URL(".assetsignore", dir), "_worker.js\n")
+      },
+    },
+  }
+}
