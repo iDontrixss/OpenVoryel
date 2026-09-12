@@ -1,0 +1,294 @@
+/* Copiado de packages/web/src/styles/custom.css (OpenVoryel).
+   Tokens :root + base body son los que definen la UI clara/oscura.
+   Los overrides Starlight se conservan debajo aunque esta web no usa
+   Starlight: no molestan y facilitan traer docs despues. */
+:root {
+  --sl-color-bg: hsl(0, 20%, 99%);
+  --sl-color-gray-5: hsl(0, 1%, 85%);
+  --sl-nav-gap: 40px;
+  --sl-color-text: hsl(0, 1%, 39%);
+  --sl-border-color: hsl(0, 1%, 85%);
+  --sl-color-hairline-shade: hsl(0, 1%, 85%);
+
+  --color-background: hsl(0, 20%, 99%);
+  --color-background-weak: hsl(0, 8%, 97%);
+  --color-background-weak-hover: hsl(0, 8%, 94%);
+  --color-background-strong: hsl(0, 5%, 12%);
+  --color-background-strong-hover: hsl(0, 5%, 18%);
+  --color-background-interactive: hsl(62, 84%, 88%);
+  --color-background-interactive-weaker: hsl(64, 74%, 95%);
+
+  --color-text: hsl(0, 1%, 39%);
+  --color-text-weak: hsl(0, 1%, 60%);
+  --color-text-weaker: hsl(0, 3%, 88%);
+  --color-text-strong: hsl(0, 5%, 12%);
+  --color-text-inverted: hsl(0, 20%, 99%);
+
+  --color-border: hsl(30, 2%, 81%);
+  --color-border-weak: hsl(0, 1%, 85%);
+
+  --color-icon: hsl(0, 1%, 55%);
+}
+
+body {
+  color: var(--color-text);
+  font-size: 14px;
+  background: var(--color-background);
+  font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  margin: 0;
+
+  @media (prefers-color-scheme: dark) {
+    --sl-color-bg: hsl(0, 9%, 7%);
+    --sl-color-gray-5: hsl(0, 4%, 23%);
+    --sl-color-text: hsl(0, 4%, 71%);
+    --sl-border-color: hsl(0, 4%, 23%);
+    --sl-color-hairline-shade: hsl(0, 4%, 23%);
+
+    --color-background: hsl(0, 9%, 7%);
+    --color-background-weak: hsl(0, 6%, 10%);
+    --color-background-strong: hsl(0, 15%, 94%);
+    --color-background-strong-hover: hsl(0, 15%, 97%);
+    --color-background-interactive: hsl(62, 100%, 90%);
+    --color-background-interactive-weaker: hsl(60, 20%, 8%);
+
+    --color-text: hsl(0, 4%, 71%);
+    --color-text-weak: hsl(0, 2%, 49%);
+    --color-text-weaker: hsl(0, 3%, 28%);
+    --color-text-strong: hsl(0, 15%, 94%);
+    --color-text-inverted: hsl(0, 9%, 7%);
+
+    --color-border: hsl(0, 3%, 28%);
+    --color-border-weak: hsl(0, 4%, 23%);
+
+    --color-icon: hsl(10, 3%, 43%);
+  }
+}
+
+a {
+  color: var(--color-text-strong);
+}
+
+h1 {
+  font-size: 26px;
+  font-weight: 500;
+  color: var(--color-text-strong);
+}
+
+h2 {
+  font-size: 22px;
+  font-weight: 500;
+  color: var(--color-text-strong);
+}
+
+h3 {
+  font-size: 18px;
+  font-weight: 500;
+  color: var(--color-text-strong);
+}
+
+strong {
+  font-weight: 500;
+}
+
+/* ---- OpenVoryel web app layer (landing + /app) ---- */
+
+.ov-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 24px;
+  border-bottom: 1px solid var(--color-border-weak);
+  background: var(--color-background);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.ov-header nav {
+  display: flex;
+  gap: 24px;
+}
+
+.ov-header nav a {
+  text-decoration: none;
+  color: var(--color-text);
+  font-size: 14px;
+}
+
+.ov-header nav a:hover {
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+.ov-brand {
+  font-weight: 600;
+  color: var(--color-text-strong);
+  text-decoration: none;
+  font-size: 16px;
+}
+
+.ov-hero {
+  max-width: 880px;
+  margin: 0 auto;
+  padding: 72px 24px 32px;
+  text-align: left;
+}
+
+.ov-hero h1 {
+  font-size: 40px;
+  line-height: 1.1;
+  margin: 0 0 16px;
+}
+
+.ov-hero p {
+  font-size: 16px;
+  color: var(--color-text);
+  max-width: 640px;
+}
+
+.ov-cta {
+  display: flex;
+  gap: 12px;
+  margin-top: 24px;
+  flex-wrap: wrap;
+}
+
+.ov-btn {
+  display: inline-block;
+  padding: 10px 18px;
+  border-radius: 6px;
+  text-decoration: none;
+  font-size: 14px;
+  border: 1px solid var(--color-border);
+  color: var(--color-text-strong);
+  background: var(--color-background);
+  cursor: pointer;
+}
+
+.ov-btn.primary {
+  background: var(--color-background-strong);
+  color: var(--color-text-inverted);
+  border-color: var(--color-background-strong);
+}
+
+.ov-command {
+  margin-top: 16px;
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  background: var(--color-background-weak);
+  border: 1px solid var(--color-border-weak);
+  border-radius: 6px;
+  padding: 10px 14px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 13px;
+  color: var(--color-text-strong);
+}
+
+.ov-features {
+  max-width: 880px;
+  margin: 0 auto;
+  padding: 8px 24px 64px;
+}
+
+.ov-features li {
+  margin: 8px 0;
+  color: var(--color-text);
+}
+
+.ov-app {
+  max-width: 880px;
+  margin: 0 auto;
+  padding: 32px 24px 64px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.ov-card {
+  border: 1px solid var(--color-border-weak);
+  border-radius: 8px;
+  padding: 20px;
+  background: var(--color-background);
+}
+
+.ov-card h2 {
+  margin-top: 0;
+}
+
+.ov-muted {
+  color: var(--color-text-weak);
+  font-size: 13px;
+}
+
+.ov-input,
+.ov-select,
+.ov-textarea {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 10px 12px;
+  border-radius: 6px;
+  border: 1px solid var(--color-border);
+  background: var(--color-background);
+  color: var(--color-text-strong);
+  font-size: 14px;
+}
+
+.ov-textarea {
+  min-height: 96px;
+  resize: vertical;
+  font-family: inherit;
+}
+
+.ov-row {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.ov-badge {
+  display: inline-block;
+  font-size: 11px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: var(--color-background-interactive);
+  color: var(--color-text-strong);
+  border: 1px solid var(--color-border-weak);
+}
+
+.ov-error {
+  color: #b3261e;
+  font-size: 13px;
+}
+
+.ov-chat-log {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin: 12px 0;
+}
+
+.ov-msg {
+  border: 1px solid var(--color-border-weak);
+  border-radius: 8px;
+  padding: 12px;
+  white-space: pre-wrap;
+  font-size: 14px;
+}
+
+.ov-msg.user {
+  background: var(--color-background-weak);
+}
+
+.ov-msg.assistant {
+  background: var(--color-background);
+}
+
+.ov-footer {
+  border-top: 1px solid var(--color-border-weak);
+  padding: 24px;
+  text-align: center;
+  color: var(--color-text-weak);
+  font-size: 13px;
+}

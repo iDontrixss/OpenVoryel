@@ -1,0 +1,2 @@
+# Opcional. Solo para dev local; en Cloudflare va como secret, nunca en el repo.
+# ZEN_API_KEY=opencode_xxx
