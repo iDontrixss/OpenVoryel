@@ -30,7 +30,7 @@ function assetsIgnore() {
   return {
     name: "assetsIgnore",
     hooks: {
-      "astro:build:done": async ({ dir }) => {
+      "astro:build:done": async (/** @type {{ dir: URL }} */ { dir }) => {
         const { writeFile } = await import("node:fs/promises")
         await writeFile(new URL(".assetsignore", dir), "_worker.js\n")
       },

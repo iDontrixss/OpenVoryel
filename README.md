@@ -29,6 +29,17 @@ bun run dev
 - `POST /api/zen/invoke` traduce `{ model, messages }` al endpoint que toca y devuelve `{ text }`.
 - `ANY /api/zen/[...path]` proxy allowlist solo a `opencode.ai/zen/v1`. La key viaja como
   `x-zen-key` y el servidor la convierte en `Authorization: Bearer`. El navegador nunca toca Zen directo.
+- `GET /api/zen/status` dice si el servidor tiene key propia (sin exponerla).
+
+## Modo personal (usar sin pegar key)
+
+1. Cloudflare Dashboard -> Workers & Pages -> `openvoryel-web` -> Settings -> Variables ->
+   añade secreto `ZEN_API_KEY` con tu key de `opencode.ai/zen` (redeploy automatico).
+2. `/app` muestra badge Directo y el chat funciona sin pegar nada. Una key personal
+   pegada abajo sigue teniendo prioridad (tu propia cuota).
+
+Ojo: con key del servidor, cualquiera con la URL gasta tu cuota. Para uso personal
+activa **Protect with Cloudflare Access** en Settings -> Deployment protection.
 
 Sin Electron a proposito: sin `opencode://` deep-links (usamos `/app` https),
 sin sidecar (`packages/desktop/src/main/server.ts`), sin `window.api`.

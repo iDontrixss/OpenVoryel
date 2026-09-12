@@ -9,7 +9,7 @@ interface Msg {
 // Chat minimo web contra /api/zen/invoke (proxy server-side a Zen).
 // Sin window.api ni sidecar: el navegador solo habla con nuestro /api,
 // la key Zen viaja como header x-zen-key y el servidor la reenvia a Zen.
-export default function Chat(props: { model: () => string }) {
+export default function Chat(props: { model: () => string; serverKey: () => boolean }) {
   const [input, setInput] = createSignal("")
   const [log, setLog] = createSignal<Msg[]>([])
   const [busy, setBusy] = createSignal(false)
@@ -20,7 +20,7 @@ export default function Chat(props: { model: () => string }) {
     const text = input().trim()
     if (!text || busy()) return
     const key = typeof localStorage !== "undefined" ? localStorage.getItem(STORAGE_KEY) : null
-    if (!key) {
+    if (!key && !props.serverKey()) {
       setError("Connect your Zen API key first.")
       return
     }
@@ -29,9 +29,11 @@ export default function Chat(props: { model: () => string }) {
     setLog((l) => [...l, { role: "user", content: text }])
     setInput("")
     try {
+      const headers: Record<string, string> = { "content-type": "application/json" }
+      if (key) headers["x-zen-key"] = key
       const res = await fetch("/api/zen/invoke", {
         method: "POST",
-        headers: { "content-type": "application/json", "x-zen-key": key },
+        headers,
         body: JSON.stringify({
           model: props.model() || CONTRIBUTOR_MODELS[0],
           messages: [...log(), { role: "user", content: text }],

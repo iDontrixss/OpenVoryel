@@ -1,5 +1,6 @@
 import type { APIRoute } from "astro"
 import { ZEN_API_BASE } from "../../../lib/zen"
+import { serverZenKey } from "../../../lib/zen-env"
 
 export const prerender = false
 
@@ -8,12 +9,8 @@ export const prerender = false
 // asi el navegador nunca toca Zen directo y la key no queda en logs del server.
 const ALLOWED = new Set(["GET", "POST", "PUT", "PATCH", "DELETE"])
 
-async function proxy(request: Request, path: string | undefined): Promise<Response> {
-  const key =
-    request.headers.get("x-zen-key") ??
-    import.meta.env.ZEN_API_KEY ??
-    (typeof process !== "undefined" ? process.env.ZEN_API_KEY : undefined) ??
-    null
+async function proxy(request: Request, locals: unknown, path: string | undefined): Promise<Response> {
+  const key = request.headers.get("x-zen-key") ?? serverZenKey(locals)
   if (!key) return Response.json({ error: "Missing Zen key. Connect it in /app first." }, { status: 401 })
 
   const url = new URL(request.url)
@@ -34,12 +31,12 @@ async function proxy(request: Request, path: string | undefined): Promise<Respon
   })
 }
 
-export const ALL: APIRoute = async ({ request, params }) => {
+export const ALL: APIRoute = async ({ request, params, locals }) => {
   if (!ALLOWED.has(request.method)) {
     return Response.json({ error: "Method not allowed." }, { status: 405 })
   }
   try {
-    return await proxy(request, params.path)
+    return await proxy(request, locals, params.path)
   } catch (err) {
     return Response.json(
       { error: err instanceof Error ? err.message : "Upstream request failed" },

@@ -1,5 +1,6 @@
 import type { APIRoute } from "astro"
 import { ZEN_API_BASE, endpointFor, familyFor } from "../../../lib/zen"
+import { serverZenKey } from "../../../lib/zen-env"
 
 export const prerender = false
 
@@ -8,13 +9,8 @@ interface InMsg {
   content: string
 }
 
-function userKey(request: Request): string | null {
-  return (
-    request.headers.get("x-zen-key") ??
-    import.meta.env.ZEN_API_KEY ??
-    (typeof process !== "undefined" ? process.env.ZEN_API_KEY : undefined) ??
-    null
-  )
+function userKey(request: Request, locals: unknown): string | null {
+  return request.headers.get("x-zen-key") ?? serverZenKey(locals)
 }
 
 function textOfChat(json: unknown): string {
@@ -46,8 +42,8 @@ function textOfMessages(json: unknown): string {
 // POST /api/zen/invoke { model, messages: [{role, content}] }
 // Traduce al endpoint Zen que toca segun la familia del modelo
 // (ver tabla packages/web/src/content/docs/zen.mdx) y devuelve { text }.
-export const POST: APIRoute = async ({ request }) => {
-  const key = userKey(request)
+export const POST: APIRoute = async ({ request, locals }) => {
+  const key = userKey(request, locals)
   if (!key) {
     return Response.json(
       { error: "Missing Zen key. Connect it in /app first." },

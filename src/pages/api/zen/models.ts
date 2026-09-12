@@ -1,21 +1,18 @@
 import type { APIRoute } from "astro"
 import { ZEN_API_BASE, CONTRIBUTOR_MODELS } from "../../../lib/zen"
+import { serverZenKey } from "../../../lib/zen-env"
 
 export const prerender = false
 
-function userKey(request: Request): string | null {
-  return (
-    request.headers.get("x-zen-key") ??
-    import.meta.env.ZEN_API_KEY ??
-    (typeof process !== "undefined" ? process.env.ZEN_API_KEY : undefined) ??
-    null
-  )
+function userKey(request: Request, locals: unknown): string | null {
+  return request.headers.get("x-zen-key") ?? serverZenKey(locals)
 }
 
-// GET /api/zen/models -> reenvia a GET {ZEN}/models con el Bearer del usuario.
-// Si Zen falla, devolvemos fallback contributor para no romper la UI.
-export const GET: APIRoute = async ({ request }) => {
-  const key = userKey(request)
+// GET /api/zen/models -> reenvia a GET {ZEN}/models con el Bearer del usuario
+// (o la key del servidor en modo personal).
+// Si no hay key o Zen falla, devolvemos fallback contributor para no romper la UI.
+export const GET: APIRoute = async ({ request, locals }) => {
+  const key = userKey(request, locals)
   if (!key) {
     return Response.json(
       { data: CONTRIBUTOR_MODELS.map((id) => ({ id })), fallback: true },

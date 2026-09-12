@@ -5,7 +5,10 @@ import { STORAGE_KEY, ZEN_PAGE } from "../lib/zen"
 // (vista OpenCode Zen, line1/line2/visit + apiKey label/placeholder).
 // Diferencia con desktop: sin window.api/store; la key vive en localStorage
 // y se valida contra nuestro proxy /api/zen/models (nunca directa a Zen).
-export default function ConnectZen(props: { onConnected?: (key: string) => void }) {
+export default function ConnectZen(props: {
+  serverKey: () => boolean
+  onConnected?: (key: string) => void
+}) {
   const [value, setValue] = createSignal("")
   const [error, setError] = createSignal<string | undefined>()
   const [busy, setBusy] = createSignal(false)
@@ -47,6 +50,17 @@ export default function ConnectZen(props: { onConnected?: (key: string) => void 
     <div class="ov-card">
       <h2>OpenCode Zen</h2>
       <Show
+        when={props.serverKey()}
+        fallback={
+          <p>OpenCode Zen gives you access to a curated set of reliable optimized models for coding agents.</p>
+        }
+      >
+        <p class="ov-muted">
+          <span class="ov-badge">Directo</span> El servidor ya tiene key Zen configurada — usala
+          sin pegar nada. Si prefieres tu propia cuota, pega tu key abajo y tiene prioridad.
+        </p>
+      </Show>
+      <Show
         when={!connected()}
         fallback={
           <div class="ov-row">
@@ -57,7 +71,6 @@ export default function ConnectZen(props: { onConnected?: (key: string) => void 
           </div>
         }
       >
-        <p>OpenCode Zen gives you access to a curated set of reliable optimized models for coding agents.</p>
         <p>With a single API key you&apos;ll get access to models such as Claude, GPT, Gemini, GLM and more.</p>
         <p>
           Visit <a href={ZEN_PAGE} target="_blank" rel="noreferrer">opencode.ai/zen</a> to collect your API key.
