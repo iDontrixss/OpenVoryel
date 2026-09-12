@@ -1,0 +1,38 @@
+---
+import "../styles/custom.css"
+import config from "../../config.mjs"
+
+interface Props {
+  title: string
+  description?: string
+}
+const { title, description = "OpenVoryel web — misma integracion Zen que la app, adaptada a web." } = Astro.props
+---
+
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content={description} />
+    <title>{title} — OpenVoryel</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>◍</text></svg>" />
+  </head>
+  <body>
+    <header class="ov-header">
+      <a class="ov-brand" href="/">OpenVoryel</a>
+      <nav>
+        {config.headerLinks.map((l: { name: string; url: string }) => (
+          <a href={l.url}>{l.name}</a>
+        ))}
+        <a href={config.github} target="_blank" rel="noreferrer">GitHub</a>
+      </nav>
+    </header>
+    <main>
+      <slot />
+    </main>
+    <footer class="ov-footer">
+      UI copiada de OpenVoryel (tokens de packages/web) · Zen via <a href="https://opencode.ai/zen" target="_blank" rel="noreferrer">opencode.ai/zen</a>
+    </footer>
+  </body>
+</html>
