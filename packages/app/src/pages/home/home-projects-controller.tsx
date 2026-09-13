@@ -1,4 +1,5 @@
 import { useDirectoryPicker } from "@/components/directory-picker"
+import { DialogNewProject } from "@/components/dialog-new-project"
 import { useServerManagementController } from "@/components/dialog-select-server"
 import { useSettingsCommand } from "@/components/settings-dialog"
 import { DialogServerV2 } from "@/components/settings-v2/dialog-server-v2"
@@ -88,6 +89,19 @@ export function createHomeProjectsController(home: HomeController) {
       },
       choose: (conn: ServerConnection.Any) => {
         if (home.server.health(conn)?.healthy === false) return
+        // Web has no native folder picker: a project is just a name and its
+        // folder is created on the server on first use.
+        if (platform.platform === "web") {
+          dialog.show(() => (
+            <DialogNewProject
+              server={conn}
+              onSelect={(directory) => {
+                if (directory) home.project.add(conn, [directory])
+              }}
+            />
+          ))
+          return
+        }
         pickDirectory({
           server: conn,
           title: language.t("command.project.open"),
