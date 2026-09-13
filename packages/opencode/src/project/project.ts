@@ -1,5 +1,4 @@
 import { LayerNode } from "@opencode-ai/core/effect/layer-node"
-import { dirname } from "path"
 import { and, eq, sql } from "drizzle-orm"
 import { Database } from "@opencode-ai/core/database/database"
 import { ProjectDirectoryTable, ProjectTable } from "@opencode-ai/core/project/sql"
@@ -215,17 +214,13 @@ const layer = Layer.effect(
       yield* Effect.logInfo("fromDirectory", { directory })
 
       // Named web projects may not exist on disk yet: materialize the
-      // requested directory on first touch so chat and tools work
-      // immediately. Only the leaf is created and only when its parent
-      // exists, so typos in deeper paths never sprout stray folders.
-      // Failures are ignored to preserve previous behavior.
-      const requested = AbsolutePath.make(directory)
-      const parent = dirname(requested)
-      if (parent !== requested && (yield* fs.existsSafe(parent)) && !(yield* fs.existsSafe(requested))) {
-        yield* fs.ensureDir(requested).pipe(Effect.ignore)
-      }
+      // requested directory (parents included) on first touch so chat and
+      // tools work immediately. A missing directory otherwise kills the
+      // prompt fiber with no recorded error. Failures are ignored to
+      // preserve previous behavior for unreachable paths.
+      yield* fs.ensureDir(AbsolutePath.make(directory)).pipe(Effect.ignore)
 
-      const data = yield* projectV2.resolve(requested)
+      const data = yield* projectV2.resolve(AbsolutePath.make(directory))
       const worktree = data.id === ProjectV2.ID.make("global") && !data.vcs ? "/" : data.directory
 
       // Phase 2: upsert
